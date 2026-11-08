@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 PROFILE=.zshrc
-EMAIL=$1
+EMAIL=$1 # for SSH key/development
 
 # Oh My Zsh!
 export RUNZSH=no
@@ -59,6 +59,9 @@ Host github.com
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   ssh-add "$HOME"/.ssh/id_ed25519
 fi
+
+# switch this repo's remote from https to ssh now that the key is set up
+git -C "${0:A:h}" remote set-url origin git@github.com:thunder033/machine-setup.git
 
 # dev tooling
 mkdir "$HOME"/project/
