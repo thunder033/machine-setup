@@ -1,0 +1,19 @@
+# docker-compose.override.yaml
+services:
+  ssh-agent-proxy:
+    image: alpine/socat
+    user: root
+    volumes:
+      - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock
+      - ssh-agent:/ssh
+    entrypoint: >
+      sh -c "socat UNIX-LISTEN:/ssh/agent.sock,fork,mode=666
+      UNIX-CONNECT:/run/host-services/ssh-auth.sock"
+  my-service: # name of the service that needs the proxy
+    depends_on: [ ssh-agent-proxy ]
+    volumes:
+      - ssh-agent:/ssh
+    environment:
+      SSH_AUTH_SOCK: /ssh/agent.sock
+volumes:
+  ssh-agent:

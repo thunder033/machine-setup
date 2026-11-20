@@ -2,6 +2,8 @@
 
 PROFILE=.zshrc
 EMAIL=$1 # for SSH key/development
+# pass --1password-agent as 2nd arg to use the 1Password SSH agent instead of a local key
+USE_1P_AGENT=$([[ "$2" == "--1password-agent" ]] && echo 1)
 
 # Oh My Zsh!
 export RUNZSH=no
@@ -40,6 +42,20 @@ eval "$("$HOMEBREW_PATH"/bin/brew shellenv zsh)"
 # integration needs to be enabled in 1Password app (developer settings)
 brew install --cask 1password-cli
 
+# SSH
+if [[ -n "$USE_1P_AGENT" ]]; then
+  # SSH agent must be enabled in the 1Password app (developer settings)
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    AGENT_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  else
+    AGENT_SOCK="$HOME/.1password/agent.sock"
+  fi
+  mkdir -p "$HOME"/.ssh
+  echo "
+Host *
+  IdentityAgent \"$AGENT_SOCK\"
+" >> "$HOME"/.ssh/config
+else
 # SSH Key
 ssh-keygen -t ed25519 -C "$EMAIL"
 
@@ -50,14 +66,14 @@ eval "$(ssh-agent -s)"
 if [[ "$OSTYPE" == "darwin"* ]]; then
   touch "$HOME"/.ssh/config
   echo "
-Host github.com
+Host *
   AddKeysToAgent yes
   UseKeychain yes
-  IdentityFile ~/.ssh/id_ed25519
 " >> "$HOME"/.ssh/config
   ssh-add --apple-use-keychain ~/.ssh/id_ed25519
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   ssh-add "$HOME"/.ssh/id_ed25519
+fi
 fi
 
 # switch this repo's remote from https to ssh now that the key is set up
