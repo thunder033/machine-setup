@@ -79,6 +79,10 @@ fi
 # switch this repo's remote from https to ssh now that the key is set up
 git -C "${0:A:h}" remote set-url origin git@github.com:thunder033/machine-setup.git
 
+# Claude Code user-level instructions
+mkdir -p "$HOME"/.claude
+ln -sfn "${0:A:h}"/claude/CLAUDE.md "$HOME"/.claude/CLAUDE.md
+
 # dev tooling
 mkdir "$HOME"/project/
 
