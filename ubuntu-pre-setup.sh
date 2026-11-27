@@ -8,7 +8,8 @@ fi
 installed() { dpkg -s "$1" &>/dev/null; }
 
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y curl zsh git fonts-font-awesome
+sudo apt install -y gnupg software-properties-common libatomic1 # deps that are likely present
+sudo apt install -y curl zsh git fonts-font-awesome # desired applications
 
 [[ "$SHELL" == *zsh ]] || chsh -s "$(which zsh)" # switches to zsh shell
 

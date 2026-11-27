@@ -13,4 +13,5 @@ zsh "$D"/setup/ssh.sh "$@"
 zsh "$D"/setup/claude.sh
 zsh "$D"/setup/node.sh
 zsh "$D"/setup/docker.sh
+zsh "$D"/setup/protonmail-bridge.sh
 zsh "$D"/mac-setup.sh
